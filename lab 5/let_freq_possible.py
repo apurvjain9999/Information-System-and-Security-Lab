@@ -1,8 +1,5 @@
-#Letter frequency attack for top 10 plain text
-#Monoalphabetic Cipher and Additive Cipher
-#Made By: Apurv Jain
-
-#index of alphabets in english language
+#Letter Frequency Attack for top 10 Plaintexts
+#Additive Cipher
 eng = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 ip_file = ""
 #op_file = ""
@@ -21,7 +18,6 @@ for i in range(10) :
     st = input("\nPlain Text " + str(i+1) + ": ")
     freq_plain_txt.insert(i, st.upper())
 
-#freq_plain_txt = ["APURV", 'CROSS', 'PEOPLE', 'WE', 'DO', 'LET', 'HIDE', 'FGIH', 'FIGHT', 'JOKER']
 #For every plaintext possible
 for pl in range(10) :
     count = [0 for i in range(26)]
@@ -64,48 +60,49 @@ for pl in range(10) :
         if max_p == res[i] :
             max_i.append(i)
 
+    
+    diff = 0
+    fg = 0
     #Checking for each part
     for i in max_i:
         st = s_text_freq[i][0]
+        fg  = 0
         letter = [-1 for i in range(26)] #For generating possible key
-        diff = 0
-        kn = 0
-        pn = 0
         for q in range(len(st)) :
             k = eng.index(st[q])
             
             #print(st)
             l = q
-            d = 0
             #print(l)
             m = freq_plain_txt[pl][l]
             n = eng.index(m)
-            if letter[n] != -1:
-                if letter[n] != k:
-                    pn = 1
-            else:    
-                letter[n] = k
-            if pn == 1:
-                break
+            #print(k)
+            #print(n)
+            #print(n - k)
             d = (n - k) % 26
-            if (n-k) < 0:
+            if (n-k) < 0 :
                 d = d - 26
             if l != 0:
-                if d != diff:
-                    kn = 1
+                #Checking diff
+                if d != diff: #If diff not same, it will not match 
+                    fg = 1
                 else :
                     diff = d
             else :
                 diff = d
-        #print(letter)
-        if pn == 1:
+            #print(diff)
+            if fg == 1 :
+                break
+            letter[n] = k
+        if fg == 1:
             continue
-        if kn == 0:
-            for i in range(len(letter)): 
-                if letter[i] == -1 :
-                    letter[i] = (i-diff) % 26
-                    if (i-diff) < 0 :
-                        letter[i] = letter[i] - 26
+        #Generatng key for the rest of the letters 
+        for i in range(len(letter)): 
+            if letter[i] == -1 :
+                letter[i] = (i-diff) % 26
+                if (i-diff) < 0 :
+                    letter[i] = letter[i] - 26
+        #print(letter)
         ip = open(ip_file, "r")
         st = "A"
         #Generating possible plaintext
@@ -116,22 +113,15 @@ for pl in range(10) :
             for i in st:
                 if i.isalpha() == True :
                     j = eng.index(i)
-                    fh = 0
-                    for p in letter:
-                        if p == j:
-                            fh = 1
-                            break
-                    if fh != 0:
-                        wr += eng[letter.index(j)]
-                    else:
-                        wr += "*"
+                    wr += eng[letter.index(j)]
+
                 else:
                     wr += i
 
             wr = wr.lower()
             #print(wr)
             plain_txt.append(wr)
-            print(plain_txt)
+            #print(plain_txt)
                 
         ip.close()
 
